@@ -5,7 +5,7 @@ module.exports = {
     description: "returns bot information and credits",
     async execute(message, args){
         const embed = new Discord.MessageEmbed();
-        embed.setTitle("`Bot Information:`")
+        embed.setTitle("Bot Information:")
         embed.setThumbnail("https://i.imgur.com/Y6rAoZi.png");
         embed.addField("Version:", "`Alpha`");
         embed.addField("Status:", "`Online`");
