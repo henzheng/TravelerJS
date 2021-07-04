@@ -2,6 +2,7 @@ const Discord = require("discord.js");
 const fetch = require('node-fetch');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const creds = require("../traveler.json");
+const reference = require("../reference.json");
 const utils = require("../modules/utils");
 require('dotenv').config();
 
@@ -12,6 +13,7 @@ class Builds{
         this.clientid = message.author.id;
         this.error = new Discord.MessageEmbed();
         this.reactions = ["⬅️", "➡️"];
+        this.names = {"hu-tao": "Hu Tao"};
         this.currentIndex = 0;
         this.content = {};
         this.content.embeds = {};
@@ -43,22 +45,20 @@ class Builds{
             return
         }
         this.character = this.args[0].toLowerCase();
-        const res = await fetch("https://api.genshin.dev/characters/" + this.character);
-        if(res.ok == false){
+        if(reference.hasOwnProperty(this.character) == false){
             this.error.setColor("#F8C300");
             this.error.setTitle("Error");
             this.error.setDescription("Couldn't find that character, maybe you typed their name wrong?");
             await this.message.channel.send(this.error);
             return
         }
+        this.content.vision = reference[this.character];
         const load = new Discord.MessageEmbed();
         await load.setTitle("Loading Information...");
         await load.setColor("#F8C300");
         await load.setDescription("Please be patient.");
         await load.setThumbnail("https://i.imgur.com/NWgRRYE.png");
         this.res = await this.message.channel.send(load)
-        const temp = await res.json();
-        this.content.vision = temp.vision;
         //Connect to Google Sheet and filter for data
         const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID);
         await doc.useServiceAccountAuth(creds);
@@ -66,14 +66,22 @@ class Builds{
         const data = doc.sheetsByIndex;
         const sheet = data.filter(e => e.title == this.content.vision + " ")[0];
         await sheet.setHeaderRow(["start", "name", "role", "weapon", "artifact", "main_stats", "sub_stats", "talents", "tips", "end"]);
-        const sheet_row = await sheet.getRows()
-        var row = sheet_row.findIndex(row => row.hasOwnProperty("_rawData") && row._rawData[1] == this.character.toUpperCase())
-
+        const sheet_row = await sheet.getRows();
+        //character name on the google spreadsheet
+        const sheet_name = Object.keys(this.names).includes(this.character) ? this.names[this.character] : this.character
+        var row = sheet_row.findIndex(row => row.hasOwnProperty("_rawData") && row._rawData[1] == sheet_name.toUpperCase())
         const arr = []
         //Grab all content up to notes
-        while(true){if(sheet_row[row]["_rawData"][1] != "NOTES"){ arr.push(sheet_row[row]["_rawData"]); row +=1}
-        else if(sheet_row[row]["_rawData"][1] == "NOTES"){arr.push(sheet_row[row]["_rawData"]); break}}
-
+        while(true){
+            const temp = (sheet_row[row]["_rawData"][1]).toLowerCase()
+            if(temp != "notes"){
+                arr.push(sheet_row[row]["_rawData"]); 
+                row +=1
+            }else if(temp == "notes"){
+                arr.push(sheet_row[row]["_rawData"]); 
+                break
+            }
+        }
         //remove empty quotes and unused information
         for(var entry of arr) arr.splice(arr.indexOf(entry), 1, entry.filter(e => e != ""));
         arr.splice(0, 2);
@@ -109,7 +117,7 @@ class Builds{
     }
 }
 module.exports = {
-    name: "builds",
+    name: "builder",
     description: "fetch recommended character builds from spreadsheet",
     async execute(message, args){
         const instance = new Builds(message, args);
