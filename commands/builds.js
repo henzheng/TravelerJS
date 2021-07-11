@@ -117,7 +117,7 @@ class Builds{
     }
 }
 module.exports = {
-    name: "builder",
+    name: "builds",
     description: "fetch recommended character builds from spreadsheet",
     async execute(message, args){
         const instance = new Builds(message, args);
