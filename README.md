@@ -10,7 +10,7 @@ Below are visual examples of how the commands can be used in Discord. These scre
 
 <p align="center">
   <img src="/example1.png" width="400" alt="Character Command Example">
-  <img src="/example2png" width="400" alt="Build Command Example">
+  <img src="/example2.png" width="400" alt="Build Command Example">
 </p>
 
 *Left: An example of the `?character` command displaying character information. Each response has multiple pages users can flip through. Right: An example of the `?build` command showing character build recommendations.*
