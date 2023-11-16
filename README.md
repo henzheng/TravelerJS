@@ -1,13 +1,13 @@
 
 <p align="center">
-  <img width="150" height="133" src="/logo.png" alt="TravelerJS logo">
+  <img width="249" height="190" src="/logo.png" alt="TravelerJS logo">
 </p>
 
 <h1 align="center">TravelerJS</h1>
 
 TravelerJS is a Discord bot created to serve as an all-purpose companion for the popular game Genshin Impact. With this bot, users can request character builds, check daily events, and get general character information directly within Discord. It is built using the `discord-js` library and `Node.js`, ensuring a smooth and responsive user experience.
 
-`#DiscordBot` `#GenshinImpact` `#Node.js` `#discord.js` `#JavaScript` `#DiscordAPI`
+`#DiscordBot` `#GenshinImpact` `#Node.js` `#discord-js` `#JavaScript` `#DiscordAPI`
 
 # Command Usage Examples
 
